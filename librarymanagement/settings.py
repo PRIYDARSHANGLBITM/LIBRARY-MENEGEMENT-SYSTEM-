@@ -24,12 +24,9 @@ STATIC_DIR=os.path.join(BASE_DIR,'static')
 SECRET_KEY = 'k(6-_4sgig$sbrccr2*0=7s)bklpiywi#_121l)s(f8)dq^^wv'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ["localhost",
-    "127.0.0.1",
-    ".onrender.com",]
-
+ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -147,6 +144,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = '/studentlogin'
 
-STATIC_URL = '/static/'
-
-STATIC_ROOT = BASE_DIR / "staticfiles"

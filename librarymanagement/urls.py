@@ -46,4 +46,8 @@ urlpatterns = [
     # Delete operations
     path('delete/<int:id>', views.delete, name='delete'),
     path('deletestudent/<int:id>', views.deletestudent, name='deletestudent'),
+
+
+    # Student
+    path('editstudent/<int:id>', views.editstudent, name='editstudent'),
 ]

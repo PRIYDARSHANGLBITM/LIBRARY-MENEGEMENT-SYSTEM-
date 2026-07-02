@@ -1,3 +1,5 @@
+from urllib import request
+
 from django.shortcuts import redirect, render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import Group
@@ -253,3 +255,40 @@ def deletestudent(request, id):
     user = student.user
     user.delete()
     return redirect("/viewstudent")
+
+
+# ---------------- Delete Student ----------------
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+
+
+# ---------------- Edit Student ----------------
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def editstudent(request, id):
+
+    student = get_object_or_404(models.StudentExtra, id=id)
+    user = student.user
+
+    if request.method == "POST":
+
+        user.first_name = request.POST.get("firstname")
+        user.last_name = request.POST.get("lastname")
+        user.username = request.POST.get("username")
+
+        password = request.POST.get("password")
+        if password:
+            user.set_password(password)
+
+        user.save()
+
+        student.enrollment = request.POST.get("enrollment")
+        student.branch = request.POST.get("branch")
+        student.save()
+
+        return redirect("/viewstudent")
+
+    return render(request, "library/editstudent.html", {
+        "student": student,
+        "user": user,
+    })
