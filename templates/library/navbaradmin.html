@@ -1,0 +1,170 @@
+{% load static %}
+
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+
+    <div class="container">
+
+        <a class="navbar-brand" href="/afterlogin">
+
+            <i class="fa-solid fa-book-open-reader"></i>
+            <span>PDN</span>
+
+        </a>
+
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#adminNavbar"
+                aria-controls="adminNavbar"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+
+            <span class="navbar-toggler-icon"></span>
+
+        </button>
+
+        <div class="collapse navbar-collapse" id="adminNavbar">
+
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item">
+
+                    <a class="nav-link" href="/afterlogin">
+
+                        <i class="fa-solid fa-house"></i>
+                        Dashboard
+
+                    </a>
+
+                </li>
+
+                <li class="nav-item dropdown">
+
+                    <a class="nav-link dropdown-toggle"
+                       href="#"
+                       role="button"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">
+
+                        <i class="fa-solid fa-book"></i>
+                        Books
+
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+
+                        <li>
+
+                            <a class="dropdown-item" href="/addbook">
+
+                                <i class="fa-solid fa-plus"></i>
+                                Add Book
+
+                            </a>
+
+                        </li>
+
+                        <li>
+
+                            <a class="dropdown-item" href="/viewbook">
+
+                                <i class="fa-solid fa-book-open"></i>
+                                View Books
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </li>
+
+                <li class="nav-item dropdown">
+
+                    <a class="nav-link dropdown-toggle"
+                       href="#"
+                       role="button"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">
+
+                        <i class="fa-solid fa-users"></i>
+                        Students
+
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+
+                        <li>
+
+                            <a class="dropdown-item" href="/viewstudent">
+
+                                <i class="fa-solid fa-user-graduate"></i>
+                                View Students
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </li>
+
+                <li class="nav-item dropdown">
+
+                    <a class="nav-link dropdown-toggle"
+                       href="#"
+                       role="button"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">
+
+                        <i class="fa-solid fa-handshake"></i>
+                        Issue Books
+
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+
+                        <li>
+
+                            <a class="dropdown-item" href="/issuebook">
+
+                                <i class="fa-solid fa-paper-plane"></i>
+                                Issue Book
+
+                            </a>
+
+                        </li>
+
+                        <li>
+
+                            <a class="dropdown-item" href="/viewissuedbook">
+
+                                <i class="fa-solid fa-book-open-reader"></i>
+                                Issued Books
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </li>
+
+                <li class="nav-item">
+
+                    <a href="{% url 'logout' %}" class="nav-link logout-btn">
+
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        Logout
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</nav>
