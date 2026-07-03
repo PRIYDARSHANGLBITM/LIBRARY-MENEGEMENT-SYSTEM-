@@ -149,17 +149,54 @@
                     </ul>
 
                 </li>
+                
 
-                <li class="nav-item">
+                <li class="nav-item dropdown">
 
-                    <a href="{% url 'logout' %}" class="nav-link logout-btn">
+    <a class="nav-link dropdown-toggle"
+       href="#"
+       role="button"
+       data-bs-toggle="dropdown"
+       aria-expanded="false">
 
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                        Logout
+        <i class="fa-solid fa-circle-user"></i>
 
-                    </a>
+        {{ request.user.first_name }}
 
-                </li>
+    </a>
+
+    <ul class="dropdown-menu dropdown-menu-end">
+
+        <li>
+            <a class="dropdown-item" href="{% url 'adminprofile' %}">
+                <i class="fa-solid fa-user"></i>
+                My Profile
+            </a>
+        </li>
+
+        <li><hr class="dropdown-divider"></li>
+
+        <li>
+            <a class="dropdown-item" href="{% url 'logout' %}">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Logout
+            </a>
+        </li>
+
+    </ul>
+
+</li>
+
+                
+
+
+
+
+                <li class="nav-item ms-2">
+    <button class="btn btn-outline-light" id="themeToggle">
+        <i class="fa-solid fa-moon"></i>
+    </button>
+</li>
 
             </ul>
 

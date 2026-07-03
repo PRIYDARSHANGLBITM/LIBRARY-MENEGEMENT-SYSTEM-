@@ -48,6 +48,14 @@ urlpatterns = [
     path('deletestudent/<int:id>', views.deletestudent, name='deletestudent'),
 
 
-    # Student
+
+        # Student
     path('editstudent/<int:id>', views.editstudent, name='editstudent'),
+
+    # Admin
+    path("adminprofile", views.adminprofile_view, name="adminprofile"),
+    path("editadmin", views.editadmin, name="editadmin"),
+
+    # Email Reminder
+    path("sendreminder", views.send_reminder_view, name="sendreminder"),
 ]

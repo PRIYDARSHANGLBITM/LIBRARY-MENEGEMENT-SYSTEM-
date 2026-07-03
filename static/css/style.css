@@ -224,3 +224,151 @@ textarea:focus{
     box-shadow:0 0 8px rgba(37,99,235,.2);
 
 }
+
+/* ===========================
+      DARK MODE
+=========================== */
+
+body.dark-mode{
+    background:#121212 !important;
+    color:#ffffff !important;
+}
+
+body.dark-mode .card{
+    background:#1f1f1f !important;
+    color:#ffffff !important;
+}
+
+body.dark-mode .table{
+    color:white;
+}
+
+body.dark-mode .table thead{
+    background:#0d6efd;
+}
+
+body.dark-mode .table td,
+body.dark-mode .table th{
+    background:#1f1f1f;
+    color:white;
+}
+
+body.dark-mode .navbar{
+    background:#1a1a1a !important;
+}
+
+body.dark-mode .dropdown-menu{
+    background:#252525;
+}
+
+body.dark-mode .dropdown-item{
+    color:white;
+}
+
+body.dark-mode .dropdown-item:hover{
+    background:#0d6efd;
+    color:white;
+}
+
+body.dark-mode .form-control{
+    background:#2d2d2d;
+    color:white;
+    border-color:#444;
+}
+
+body.dark-mode .form-control::placeholder{
+    color:#bbb;
+}
+
+body.dark-mode .form-control:focus{
+    background:#2d2d2d;
+    color:white;
+}
+
+body.dark-mode footer{
+    background:#111;
+    color:white;
+}
+
+body.dark-mode .text-muted{
+    color:#cccccc !important;
+}
+body{
+    transition:.35s ease;
+}
+
+.card,
+.navbar,
+.dropdown-menu,
+.form-control,
+.table,
+.footer{
+    transition:.35s ease;
+}
+
+body.dark-mode{
+    background:#121212 !important;
+    color:#fff !important;
+}
+
+body.dark-mode .page,
+body.dark-mode .container{
+    color:#fff;
+}
+
+body.dark-mode .card{
+    background:#1f2937 !important;
+    color:#fff !important;
+}
+
+body.dark-mode .card-header{
+    color:white !important;
+}
+
+body.dark-mode .table{
+    color:white;
+}
+
+body.dark-mode .table td,
+body.dark-mode .table th{
+    background:#1f2937 !important;
+    color:white !important;
+}
+
+body.dark-mode .form-control{
+    background:#374151;
+    color:white;
+    border:1px solid #555;
+}
+
+body.dark-mode .form-control:focus{
+    background:#374151;
+    color:white;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea{
+    background:#374151;
+    color:white;
+    border-color:#555;
+}
+
+body.dark-mode label,
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6{
+    color:rgb(38, 52, 196) !important;
+}
+
+body.dark-mode .text-muted{
+    color:#cbd5e1 !important;
+}
+
+body.dark-mode .btn-outline-light{
+    border-color:white;
+    color:white;
+}

@@ -37,11 +37,7 @@ body{
     color:white;
 }
 
-.table th{
-    text-align:center;
-    vertical-align:middle;
-}
-
+.table th,
 .table td{
     text-align:center;
     vertical-align:middle;
@@ -63,6 +59,16 @@ body{
     box-shadow:0 8px 20px rgba(0,0,0,.08);
 }
 
+.profile-item{
+    margin-bottom:12px;
+    font-size:16px;
+}
+
+.profile-item i{
+    width:25px;
+    color:#2563EB;
+}
+
 </style>
 
 </head>
@@ -78,13 +84,112 @@ body{
 <div class="card-body text-center">
 
 <h2 class="fw-bold text-primary">
+
 <i class="fa-solid fa-book-open-reader"></i>
- My Issued Books
+
+My Issued Books
+
 </h2>
 
 <p class="text-muted mb-0">
-View all books currently issued to you along with issue date, expiry date and fine.
+
+View your profile and all books currently issued to you.
+
 </p>
+
+</div>
+
+</div>
+
+<!-- Student Profile -->
+
+<div class="card mb-4">
+
+<div class="card-header bg-dark text-white fw-bold">
+
+<i class="fa-solid fa-user-graduate"></i>
+
+Student Profile
+
+</div>
+
+<div class="card-body">
+
+<div class="row">
+
+<div class="col-md-6">
+
+<div class="profile-item">
+
+<i class="fa-solid fa-user"></i>
+
+<strong>Name :</strong>
+
+{{ user.first_name }} {{ user.last_name }}
+
+</div>
+
+<div class="profile-item">
+
+<i class="fa-solid fa-at"></i>
+
+<strong>Username :</strong>
+
+{{ user.username }}
+
+</div>
+
+<div class="profile-item">
+
+<i class="fa-solid fa-id-card"></i>
+
+<strong>Enrollment :</strong>
+
+{{ student.enrollment }}
+
+</div>
+
+</div>
+
+<div class="col-md-6">
+
+<div class="profile-item">
+
+<i class="fa-solid fa-building-columns"></i>
+
+<strong>Branch :</strong>
+
+{{ student.branch }}
+
+</div>
+
+<div class="profile-item">
+
+<i class="fa-solid fa-book"></i>
+
+<strong>Issued Books :</strong>
+
+{{ li1|length }}
+
+</div>
+
+<div class="profile-item">
+
+<i class="fa-solid fa-circle-check text-success"></i>
+
+<strong>Status :</strong>
+
+<span class="badge bg-success">
+
+Active
+
+</span>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 
@@ -99,7 +204,9 @@ View all books currently issued to you along with issue date, expiry date and fi
 <div class="card">
 
 <div class="card-header bg-primary text-white fw-bold">
+
 Book Details
+
 </div>
 
 <div class="table-responsive">
@@ -126,11 +233,11 @@ Book Details
 
 <tr>
 
-<td>{{t.0}}</td>
-<td>{{t.1}}</td>
-<td>{{t.2}}</td>
-<td>{{t.3}}</td>
-<td>{{t.4}}</td>
+<td>{{ t.0 }}</td>
+<td>{{ t.1 }}</td>
+<td>{{ t.2 }}</td>
+<td>{{ t.3 }}</td>
+<td>{{ t.4 }}</td>
 
 </tr>
 
@@ -151,7 +258,9 @@ Book Details
 <div class="card">
 
 <div class="card-header bg-success text-white fw-bold">
+
 Issue Information
+
 </div>
 
 <div class="table-responsive">
@@ -163,7 +272,7 @@ Issue Information
 <tr>
 
 <th>Issue Date</th>
-<th>Expiry</th>
+<th>Expiry Date</th>
 <th>Fine</th>
 
 </tr>
@@ -176,16 +285,28 @@ Issue Information
 
 <tr>
 
-<td>{{t.0}}</td>
+<td>{{ t.0 }}</td>
 
-<td>{{t.1}}</td>
+<td>{{ t.1 }}</td>
 
 <td>
 
 {% if t.2 == 0 %}
-<span class="badge bg-success">No Fine</span>
+
+<span class="badge bg-success">
+
+No Fine
+
+</span>
+
 {% else %}
-<span class="badge-fine">₹ {{t.2}}</span>
+
+<span class="badge-fine">
+
+₹ {{ t.2 }}
+
+</span>
+
 {% endif %}
 
 </td>
@@ -215,7 +336,9 @@ Issue Information
 <h3>No Book Issued</h3>
 
 <p class="text-muted">
+
 Currently no books have been issued to your account.
+
 </p>
 
 </div>
@@ -229,4 +352,5 @@ Currently no books have been issued to your account.
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
+
 </html>

@@ -12,15 +12,23 @@ class ContactusForm(forms.Form):
 
 class AdminSigupForm(forms.ModelForm):
     class Meta:
-        model=User
-        fields=['first_name','last_name','username','password']
+        model = User
+        fields = ['first_name', 'last_name', 'username', 'email', 'password']
 
 
 
 class StudentUserForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+
     class Meta:
-        model=User
-        fields=['first_name','last_name','username','password']
+        model = User
+        fields = [
+            'first_name',
+            'last_name',
+            'username',
+            'email',
+            'password'
+        ]
 
 class StudentExtraForm(forms.ModelForm):
     class Meta:

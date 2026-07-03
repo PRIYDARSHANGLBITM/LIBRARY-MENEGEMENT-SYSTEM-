@@ -1,3 +1,4 @@
+
 from urllib import request
 
 from django.shortcuts import redirect, render, get_object_or_404
@@ -9,9 +10,11 @@ from django.contrib.auth import logout   # <-- ADD THIS
 from datetime import date
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-
+from django.contrib.auth import update_session_auth_hash
 from . import forms, models
 from librarymanagement.settings import EMAIL_HOST_USER
+from datetime import timedelta
+from django.utils import timezone
 
 
 # ---------------- Home & Auth ----------------
@@ -134,6 +137,57 @@ def studentlogin_view(request):
     return render(request, "library/studentlogin.html")
 
 
+
+
+def send_due_reminders():
+
+    target_date = timezone.now().date() + timedelta(days=2)
+
+    books = models.IssuedBook.objects.filter(
+        expirydate__lte=target_date
+    )
+
+    total = 0
+
+    for issued in books:
+
+        student = issued.student.user
+
+        if student.email:
+
+            send_mail(
+
+                "Library Book Return Reminder",
+
+                f"""
+Hello {student.first_name},
+
+This is a reminder from Library Management System.
+
+Book Name : {issued.book.name}
+
+Author : {issued.book.author}
+
+Return Date : {issued.expirydate}
+
+Please return your issued book before the due date to avoid fine.
+
+Thank You,
+Library Management System
+""",
+
+                EMAIL_HOST_USER,
+
+                [student.email],
+
+                fail_silently=False
+
+            )
+
+            total += 1
+
+    return total
+
 # ---------------- NEW LOGOUT VIEW (MAIN FIX) ----------------
 def logout_user(request):
     logout(request)
@@ -162,19 +216,96 @@ def viewbook_view(request):
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
+def adminprofile_view(request):
+
+    context = {
+        "total_books": models.Book.objects.count(),
+        "total_students": models.StudentExtra.objects.count(),
+        "total_issued_books": models.IssuedBook.objects.count(),
+    }
+
+    return render(request, "library/adminprofile.html", context)
+
+
+
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def editadmin(request):
+
+    user = request.user
+
+    if request.method == "POST":
+
+        user.first_name = request.POST.get("firstname")
+        user.last_name = request.POST.get("lastname")
+        user.username = request.POST.get("username")
+        user.email = request.POST.get("email")
+
+        password = request.POST.get("password")
+
+        if password:
+            user.set_password(password)
+
+        user.save()
+
+        # User logout na ho
+        update_session_auth_hash(request, user)
+
+        messages.success(request, "Profile Updated Successfully")
+
+        return redirect("adminprofile")
+
+    return render(request, "library/editadmin.html", {
+        "user": user
+    })
+
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def send_reminder_view(request):
+
+    total = send_due_reminders()
+
+    if total == 0:
+
+        messages.warning(
+            request,
+            "No reminder emails found to send."
+        )
+
+    else:
+
+        messages.success(
+            request,
+            f"{total} reminder email(s) sent successfully."
+        )
+
+    return redirect("adminprofile")
+
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
 def issuebook_view(request):
+
     form = forms.IssuedBookForm()
+
     if request.method == 'POST':
         form = forms.IssuedBookForm(request.POST)
-        if form.is_valid():
-            obj = models.IssuedBook(
-                student=form.cleaned_data['enrollment2'],
-                book=form.cleaned_data['isbn2'],
-            )
-            obj.save()
-            return render(request, 'library/bookissued.html')
-    return render(request, 'library/issuebook.html', {'form': form})
 
+        if form.is_valid():
+
+            student = form.cleaned_data['enrollment2']
+            book = form.cleaned_data['isbn2']
+
+            models.IssuedBook.objects.create(
+                student=student,
+                book=book
+            )
+
+            return render(request, 'library/bookissued.html')
+
+    return render(request, 'library/issuebook.html', {'form': form})
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
@@ -204,27 +335,37 @@ def viewstudent_view(request):
 # ---------------- Student Views ----------------
 @login_required(login_url='studentlogin')
 def viewissuedbookbystudent(request):
-    student = models.StudentExtra.objects.filter(user_id=request.user.id).first()
-    if not student:
-        return render(request, 'library/viewissuedbookbystudent.html', {'li1': [], 'li2': []})
+
+    student = models.StudentExtra.objects.get(user=request.user)
 
     issuedbooks = models.IssuedBook.objects.filter(student=student).select_related('book')
-    li1, li2 = [], []
 
-    for ib in issuedbooks:
-        li1.append((request.user, student.enrollment, student.branch, ib.book.name, ib.book.author))
+    li1 = []
+    li2 = []
 
-        issdate = f"{ib.issuedate.day}-{ib.issuedate.month}-{ib.issuedate.year}"
-        expdate = f"{ib.expirydate.day}-{ib.expirydate.month}-{ib.expirydate.year}"
-
-        days = (date.today() - ib.issuedate).days
+    for book in issuedbooks:
+        days = (date.today() - book.issuedate).days
         fine = (days - 15) * 10 if days > 15 else 0
 
-        li2.append((issdate, expdate, fine))
+        li1.append((
+            student.get_name,
+            student.enrollment,
+            student.branch,
+            book.book.name,
+            book.book.author,
+        ))
 
-    return render(request, 'library/viewissuedbookbystudent.html', {'li1': li1, 'li2': li2})
+        li2.append((
+            book.issuedate.strftime("%d-%m-%Y"),
+            book.expirydate.strftime("%d-%m-%Y"),
+            fine,
+        ))
 
-
+    return render(request, "library/viewissuedbookbystudent.html", {
+        "student": student,
+        "li1": li1,
+        "li2": li2,
+    })
 # ---------------- Static Pages ----------------
 def aboutus_view(request):
     return render(request, 'library/aboutus.html')
@@ -254,6 +395,7 @@ def deletestudent(request, id):
     student = get_object_or_404(models.StudentExtra, id=id)
     user = student.user
     user.delete()
+    messages.success(request, "Student deleted successfully!")
     return redirect("/viewstudent")
 
 
@@ -263,6 +405,7 @@ def deletestudent(request, id):
 
 
 # ---------------- Edit Student ----------------
+
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
 def editstudent(request, id):
@@ -271,20 +414,30 @@ def editstudent(request, id):
     user = student.user
 
     if request.method == "POST":
+        print(request.POST)
+        
 
         user.first_name = request.POST.get("firstname")
         user.last_name = request.POST.get("lastname")
         user.username = request.POST.get("username")
+        user.email = request.POST.get("email")
 
         password = request.POST.get("password")
+
         if password:
             user.set_password(password)
 
         user.save()
 
+        # CSRF/Session issue fix
+        if request.user == user:
+            update_session_auth_hash(request, user)
+
         student.enrollment = request.POST.get("enrollment")
         student.branch = request.POST.get("branch")
         student.save()
+
+        messages.success(request, "Student details updated successfully!")
 
         return redirect("/viewstudent")
 

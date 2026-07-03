@@ -103,6 +103,20 @@ body{
 {% include "library/navbaradmin.html" %}
 
 <div class="container page">
+{% if messages %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    {% for message in messages %}
+    Swal.fire({
+        icon: "{% if message.tags == 'success' %}success{% elif message.tags == 'error' %}error{% elif message.tags == 'warning' %}warning{% else %}info{% endif %}",
+        title: "{{ message }}",
+        showConfirmButton: false,
+        timer: 1800
+    });
+    {% endfor %}
+});
+</script>
+{% endif %}
 
 <div class="table-card">
 
@@ -139,11 +153,13 @@ Total Students :
 
 <th>Student Name</th>
 
+<th>Email</th>
+
 <th>Enrollment</th>
 
 <th>Branch</th>
 
-<th width="120">
+<th width="170">
 
 Action
 
@@ -166,21 +182,19 @@ Action
 </td>
 
 <td>
-
 {{ s.get_name }}
-
 </td>
 
 <td>
+{{ s.user.email }}
+</td>
 
+<td>
 {{ s.enrollment }}
-
 </td>
 
 <td>
-
 {{ s.branch }}
-
 </td>
 
 <td>
@@ -240,9 +254,12 @@ There are currently no registered students in the library.
 
 </div>
 
+
 {% include "library/footer.html" %}
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </body>
 

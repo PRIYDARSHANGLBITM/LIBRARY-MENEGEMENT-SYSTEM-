@@ -11,33 +11,32 @@ from library.models import StudentExtra, Book, IssuedBook
 
 fake = Faker("en_IN")
 
-# ==========================
-# CREATE GROUPS
-# ==========================
+# Delete old data (optional)
+IssuedBook.objects.all().delete()
+StudentExtra.objects.all().delete()
+Book.objects.all().delete()
+
+# Delete only seeded users
+User.objects.exclude(username="admin").delete()
 
 admin_group, _ = Group.objects.get_or_create(name="ADMIN")
 student_group, _ = Group.objects.get_or_create(name="STUDENT")
 
-# ==========================
-# CREATE ADMIN
-# ==========================
+# Admin
+admin, created = User.objects.get_or_create(
+    username="admin",
+    defaults={
+        "first_name": "Admin",
+        "last_name": "User",
+        "email": "admin@gmail.com",
+    },
+)
 
-if not User.objects.filter(username="admin").exists():
+admin.set_password("admin123")
+admin.save()
+admin_group.user_set.add(admin)
 
-    admin = User.objects.create_user(
-        username="admin",
-        password="admin123",
-        first_name="Admin",
-        last_name="User"
-    )
-
-    admin_group.user_set.add(admin)
-
-    print("Admin Created")
-
-# ==========================
-# BOOK CATEGORY
-# ==========================
+print("Admin Ready")
 
 categories = [
     "education",
@@ -49,103 +48,64 @@ categories = [
     "fantasy",
     "thriller",
     "romance",
-    "scifi"
+    "scifi",
 ]
 
-branches = [
-    "CSE",
-    "IT",
-    "ECE",
-    "EEE",
-    "ME",
-    "CE"
-]
-
-# ==========================
-# CREATE 100 STUDENTS
-# ==========================
+branches = ["CSE", "IT", "ECE", "EEE", "ME", "CE"]
 
 students = []
 
-for i in range(1,101):
+# Students
+for i in range(1, 101):
 
-    username = f"student{i}"
-
-    if User.objects.filter(username=username).exists():
-        continue
+    first = fake.first_name()
+    last = fake.last_name()
 
     user = User.objects.create_user(
-
-        username=username,
+        username=f"student{i}",
         password="student123",
-        first_name=fake.first_name(),
-        last_name=fake.last_name()
-
+        first_name=first,
+        last_name=last,
+        email=f"student{i}@gmail.com",
     )
 
     student_group.user_set.add(user)
 
     student = StudentExtra.objects.create(
-
         user=user,
         enrollment=f"2401920109{i:03}",
-        branch=random.choice(branches)
-
+        branch=random.choice(branches),
     )
 
     students.append(student)
 
-print("100 Students Added")
-
-# ==========================
-# CREATE 100 BOOKS
-# ==========================
+print("100 Students Created")
 
 books = []
 
-for i in range(1,101):
-
-    isbn = 9781000000000 + i
-
-    if Book.objects.filter(isbn=isbn).exists():
-        continue
+# Books
+for i in range(1, 101):
 
     book = Book.objects.create(
-
         name=fake.sentence(nb_words=3),
-        isbn=isbn,
+        isbn=9781000000000 + i,
         author=fake.name(),
-        category=random.choice(categories)
-
+        category=random.choice(categories),
     )
 
     books.append(book)
 
-print("100 Books Added")
+print("100 Books Created")
 
-# ==========================
-# ISSUE 50 RANDOM BOOKS
-# ==========================
+# Issue Books
+random.shuffle(books)
 
-all_students = list(StudentExtra.objects.all())
-all_books = list(Book.objects.all())
+for student, book in zip(students[:50], books[:50]):
 
-count = min(50, len(all_students), len(all_books))
+    IssuedBook.objects.create(
+        student=student,
+        book=book,
+    )
 
-for i in range(count):
-
-    student = random.choice(all_students)
-    book = random.choice(all_books)
-
-    if not IssuedBook.objects.filter(student=student, book=book).exists():
-
-        IssuedBook.objects.create(
-
-            student=student,
-            book=book
-
-        )
-
-print("50 Books Issued")
-
-print("\nDatabase Filled Successfully")
+print("50 Books Issued Successfully")
+print("Database Ready")
