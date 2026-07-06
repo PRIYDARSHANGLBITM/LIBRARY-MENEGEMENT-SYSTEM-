@@ -104,18 +104,13 @@ body{
 
 <div class="container page">
 {% if messages %}
-<script>
-document.addEventListener("DOMContentLoaded", function () {
+
     {% for message in messages %}
-    Swal.fire({
-        icon: "{% if message.tags == 'success' %}success{% elif message.tags == 'error' %}error{% elif message.tags == 'warning' %}warning{% else %}info{% endif %}",
-        title: "{{ message }}",
-        showConfirmButton: false,
-        timer: 1800
-    });
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     {% endfor %}
-});
-</script>
 {% endif %}
 
 <div class="table-card">
@@ -133,7 +128,7 @@ Registered Students
 <span class="badge badge-total">
 
 Total Students :
-{{ students|length }}
+{{ students.paginator.count }}
 
 </span>
 
@@ -227,6 +222,51 @@ Action
 </table>
 
 </div>
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+
+        {% if students.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page=1">
+                <i class="fa-solid fa-angles-left"></i> First
+            </a>
+        </li>
+
+        <li class="page-item">
+            <a class="page-link" href="?page={{ students.previous_page_number }}">
+                <i class="fa-solid fa-angle-left"></i> Previous
+            </a>
+        </li>
+        {% endif %}
+
+        {% for num in students.paginator.page_range %}
+            {% if students.number == num %}
+                <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+            {% elif num > students.number|add:'-3' and num < students.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+
+        {% if students.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ students.next_page_number }}">
+                Next <i class="fa-solid fa-angle-right"></i>
+            </a>
+        </li>
+
+        <li class="page-item">
+            <a class="page-link" href="?page={{ students.paginator.num_pages }}">
+                Last <i class="fa-solid fa-angles-right"></i>
+            </a>
+        </li>
+        {% endif %}
+
+    </ul>
+</nav>
 
 {% else %}
 

@@ -372,3 +372,14 @@ body.dark-mode .btn-outline-light{
     border-color:white;
     color:white;
 }
+
+.pagination .page-link{
+    color:#2563EB;
+    border-radius:8px;
+    margin:0 3px;
+}
+
+.pagination .page-item.active .page-link{
+    background:#2563EB;
+    border-color:#2563EB;
+}

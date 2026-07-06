@@ -15,6 +15,7 @@ from . import forms, models
 from librarymanagement.settings import EMAIL_HOST_USER
 from datetime import timedelta
 from django.utils import timezone
+from django.core.paginator import Paginator
 
 
 # ---------------- Home & Auth ----------------
@@ -320,7 +321,16 @@ def viewissuedbook_view(request):
         days = (date.today() - ib.issuedate).days
         fine = (days - 15) * 10 if days > 15 else 0
 
-        li.append((ib.student.get_name, ib.student.enrollment, ib.book.name, ib.book.author, issdate, expdate, fine))
+        li.append((
+    ib.id,
+    ib.student.get_name,
+    ib.student.enrollment,
+    ib.book.name,
+    ib.book.author,
+    issdate,
+    expdate,
+    fine
+))
 
     return render(request, 'library/viewissuedbook.html', {'li': li})
 
@@ -328,8 +338,31 @@ def viewissuedbook_view(request):
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
 def viewstudent_view(request):
-    students = models.StudentExtra.objects.all()
-    return render(request, 'library/viewstudent.html', {'students': students})
+
+    student_list = models.StudentExtra.objects.select_related('user').all().order_by('id')
+
+    paginator = Paginator(student_list, 10)   # 10 students per page
+
+    page_number = request.GET.get('page')
+    students = paginator.get_page(page_number)
+
+    return render(request, 'library/viewstudent.html', {
+        'students': students
+    })
+
+
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def returnbook(request, id):
+
+    issued_book = get_object_or_404(models.IssuedBook, id=id)
+
+    issued_book.delete()
+
+    messages.success(request, "Book returned successfully.")
+
+    return redirect("/viewissuedbook")
 
 
 # ---------------- Student Views ----------------

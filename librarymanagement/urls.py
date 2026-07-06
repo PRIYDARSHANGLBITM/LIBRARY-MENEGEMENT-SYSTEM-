@@ -58,4 +58,7 @@ urlpatterns = [
 
     # Email Reminder
     path("sendreminder", views.send_reminder_view, name="sendreminder"),
+
+
+    path('returnbook/<int:id>', views.returnbook, name='returnbook'),
 ]
