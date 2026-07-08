@@ -112,6 +112,31 @@ body{
     font-weight:600;
 
 }
+.form-card{
+
+animation:fadeIn .5s ease;
+
+}
+
+@keyframes fadeIn{
+
+from{
+
+opacity:0;
+
+transform:translateY(20px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:translateY(0);
+
+}
+
+}
 
 </style>
 
@@ -125,6 +150,22 @@ body{
 
 <div class="form-card">
 
+{% if messages %}
+
+{% for message in messages %}
+
+<div class="alert alert-success alert-dismissible fade show">
+
+{{ message }}
+
+<button class="btn-close" data-bs-dismiss="alert"></button>
+
+</div>
+
+{% endfor %}
+
+{% endif %}
+
 <h2 class="page-title">
 
 <i class="fa-solid fa-book-medical"></i>
@@ -133,7 +174,13 @@ Add New Book
 
 </h2>
 
-<form method="post">
+<p class="text-center text-muted mb-4">
+
+Fill the details below to add a new book to the library collection.
+
+</p>
+
+<form method="POST" autocomplete="off"></form>
 
 {% csrf_token %}
 
@@ -141,9 +188,11 @@ Add New Book
 
 <div class="mb-3">
 
-<label>
+<label class="form-label fw-bold">
 
 {{ field.label }}
+
+<span class="text-danger">*</span>
 
 </label>
 
@@ -163,13 +212,20 @@ Add New Book
 
 <div class="text-center mt-4">
 
-<button type="submit" class="btn btn-main">
+<button type="submit" class="btn btn-main px-5">
 
-<i class="fa-solid fa-plus"></i>
+<i class="fa-solid fa-book-medical"></i>
 
 Add Book
 
 </button>
+<a href="/addbook" class="btn btn-outline-secondary ms-2">
+
+<i class="fa-solid fa-rotate-right"></i>
+
+Reset
+
+</a>
 
 </div>
 
@@ -181,7 +237,7 @@ Add Book
 
 <i class="fa-solid fa-book-open"></i>
 
-View Available Books
+Go to Book List
 
 </a>
 

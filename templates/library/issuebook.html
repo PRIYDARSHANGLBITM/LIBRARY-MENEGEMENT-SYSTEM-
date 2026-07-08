@@ -110,6 +110,31 @@ body{
     font-weight:600;
 
 }
+.form-card{
+
+animation:fadeIn .5s ease;
+
+}
+
+@keyframes fadeIn{
+
+from{
+
+opacity:0;
+
+transform:translateY(20px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:translateY(0);
+
+}
+
+}
 
 </style>
 
@@ -123,6 +148,22 @@ body{
 
 <div class="form-card">
 
+{% if messages %}
+
+{% for message in messages %}
+
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+
+{{ message }}
+
+<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
+</div>
+
+{% endfor %}
+
+{% endif %}
+
 <h2 class="page-title">
 
 <i class="fa-solid fa-handshake"></i>
@@ -131,7 +172,23 @@ Issue Book To Student
 
 </h2>
 
-<form method="post">
+<p class="text-center text-muted mb-4">
+
+Select the student and the book below to issue a library book.
+
+</p>
+
+<div class="alert alert-info">
+
+<i class="fa-solid fa-circle-info"></i>
+
+<strong>Note:</strong>
+
+Please verify the student and book details before issuing. The due date will be calculated automatically according to your system rules.
+
+</div>
+
+<form method="POST" autocomplete="off">
 
 {% csrf_token %}
 
@@ -139,9 +196,11 @@ Issue Book To Student
 
 <div class="mb-3">
 
-<label>
+<label class="form-label fw-bold">
 
 {{ field.label }}
+
+<span class="text-danger">*</span>
 
 </label>
 
@@ -149,7 +208,7 @@ Issue Book To Student
 
 {% if field.errors %}
 
-<div class="text-danger">
+<div class="text-danger small mt-1">
 
 {{ field.errors }}
 
@@ -161,9 +220,7 @@ Issue Book To Student
 
 {% endfor %}
 
-<div class="text-center mt-4">
-
-<button type="submit" class="btn btn-main">
+<button type="submit" class="btn btn-main px-5">
 
 <i class="fa-solid fa-paper-plane"></i>
 
@@ -171,7 +228,15 @@ Issue Book
 
 </button>
 
-</div>
+<a href="/issuebook" class="btn btn-outline-secondary ms-2">
+
+<i class="fa-solid fa-rotate-right"></i>
+
+Reset
+
+</a>
+
+
 
 </form>
 
@@ -181,7 +246,7 @@ Issue Book
 
 <i class="fa-solid fa-book-open"></i>
 
-View Issued Books
+View All Issued Books
 
 </a>
 

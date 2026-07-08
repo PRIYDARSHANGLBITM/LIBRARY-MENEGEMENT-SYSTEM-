@@ -28,17 +28,14 @@ body{
 }
 
 .welcome-card{
-
     background:linear-gradient(135deg,#2563EB,#14B8A6);
     color:white;
     padding:45px;
     border-radius:20px;
     box-shadow:0 10px 30px rgba(0,0,0,.15);
-
 }
 
 .dashboard-card{
-
     background:white;
     border-radius:18px;
     padding:35px 25px;
@@ -46,69 +43,52 @@ body{
     box-shadow:0 8px 20px rgba(0,0,0,.08);
     transition:.3s;
     height:100%;
-
 }
 
 .dashboard-card:hover{
-
     transform:translateY(-8px);
-
 }
 
 .dashboard-card i{
-
     font-size:55px;
     color:#2563EB;
     margin-bottom:20px;
-
 }
 
 .dashboard-card h4{
-
     font-weight:600;
     margin-bottom:15px;
-
 }
 
 .dashboard-card h2{
-
     font-size:42px;
     font-weight:700;
     color:#2563EB;
     margin-top:10px;
-
 }
 
 .dashboard-card h5{
-
     margin-top:10px;
     color:#555;
     font-weight:600;
-
 }
 
 .btn-main{
-
     background:#2563EB;
     color:white;
     border-radius:10px;
     padding:10px 28px;
     font-weight:600;
     transition:.3s;
-
 }
 
 .btn-main:hover{
-
     background:#1D4ED8;
     color:white;
-
 }
 
 .dashboard-card a{
-
     margin-top:15px;
-
 }
 
 </style>
@@ -125,59 +105,131 @@ body{
 
 <h2>
 
-Welcome,
-
-{{ user.first_name }}
-
-👋
+Welcome, {{ user.first_name }} 👋
 
 </h2>
 
-<p class="mb-0">
+<p class="mb-4">
 
-Manage Books, Students, Issue Records and the complete Library
-Management System from one dashboard.
+Manage Books, Students, Issue Records and the complete Library Management System from one dashboard.
 
 </p>
 
+<a href="/addbook" class="btn btn-light me-2">
+
+<i class="fa-solid fa-book"></i>
+
+Add Book
+
+</a>
+
+<a href="/viewstudent" class="btn btn-warning me-2">
+
+<i class="fa-solid fa-users"></i>
+
+Students
+
+</a>
+
+<a href="/viewissuedbook" class="btn btn-success">
+
+<i class="fa-solid fa-book-open-reader"></i>
+
+Issued Books
+
+</a>
+
 </div>
+
 <div class="row g-4 mb-5">
 
-    <div class="col-md-4">
-        <div class="dashboard-card">
+<div class="col-md-4">
 
-            <i class="fa-solid fa-book"></i>
+<div class="dashboard-card">
 
-            <h2>{{ total_books }}</h2>
+<i class="fa-solid fa-book"></i>
 
-            <h5>Total Books</h5>
+<h2>{{ total_books }}</h2>
 
-        </div>
-    </div>
+<h5>Total Books</h5>
 
-    <div class="col-md-4">
-        <div class="dashboard-card">
+</div>
 
-            <i class="fa-solid fa-user-graduate"></i>
+</div>
 
-            <h2>{{ total_students }}</h2>
+<div class="col-md-4">
 
-            <h5>Total Students</h5>
+<div class="dashboard-card">
 
-        </div>
-    </div>
+<i class="fa-solid fa-user-graduate"></i>
 
-    <div class="col-md-4">
-        <div class="dashboard-card">
+<h2>{{ total_students }}</h2>
 
-            <i class="fa-solid fa-book-open-reader"></i>
+<h5>Total Students</h5>
 
-            <h2>{{ total_issued_books }}</h2>
+</div>
 
-            <h5>Issued Books</h5>
+</div>
 
-        </div>
-    </div>
+<div class="col-md-4">
+
+<div class="dashboard-card">
+
+<i class="fa-solid fa-book-open-reader"></i>
+
+<h2>{{ total_issued_books }}</h2>
+
+<h5>Issued Books</h5>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="row g-4 mb-5">
+
+<div class="col-md-4">
+
+<div class="dashboard-card">
+
+<i class="fa-solid fa-graduation-cap"></i>
+
+<h2>{{ education_books }}</h2>
+
+<h5>Education Books</h5>
+
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<div class="dashboard-card">
+
+<i class="fa-solid fa-book-open"></i>
+
+<h2>{{ novel_books }}</h2>
+
+<h5>Novel Books</h5>
+
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<div class="dashboard-card">
+
+<i class="fa-solid fa-landmark"></i>
+
+<h2>{{ history_books }}</h2>
+
+<h5>History Books</h5>
+
+</div>
+
+</div>
 
 </div>
 
@@ -191,13 +243,9 @@ Management System from one dashboard.
 
 <h4>Add Books</h4>
 
-<p>
+<p>Add new books into your library database.</p>
 
-Add new books into your library database.
-
-</p>
-
-<a href="addbook" class="btn btn-main">
+<a href="/addbook" class="btn btn-main">
 
 Open
 
@@ -215,13 +263,9 @@ Open
 
 <h4>View Books</h4>
 
-<p>
+<p>See all available books in the library.</p>
 
-See all available books in the library.
-
-</p>
-
-<a href="viewbook" class="btn btn-main">
+<a href="/viewbook" class="btn btn-main">
 
 Open
 
@@ -239,13 +283,9 @@ Open
 
 <h4>Issue Book</h4>
 
-<p>
+<p>Issue books to students quickly.</p>
 
-Issue books to students quickly.
-
-</p>
-
-<a href="issuebook" class="btn btn-main">
+<a href="/issuebook" class="btn btn-main">
 
 Open
 
@@ -263,13 +303,9 @@ Open
 
 <h4>Issued Books</h4>
 
-<p>
+<p>View every issued book and return status.</p>
 
-View every issued book and return status.
-
-</p>
-
-<a href="viewissuedbook" class="btn btn-main">
+<a href="/viewissuedbook" class="btn btn-main">
 
 Open
 
@@ -287,13 +323,9 @@ Open
 
 <h4>Students</h4>
 
-<p>
+<p>Manage registered students.</p>
 
-Manage registered students.
-
-</p>
-
-<a href="viewstudent" class="btn btn-main">
+<a href="/viewstudent" class="btn btn-main">
 
 Open
 
@@ -304,13 +336,215 @@ Open
 </div>
 
 </div>
+<!-- Statistics Section -->
+
+<div class="row g-4 mb-5">
+
+    <div class="col-lg-6">
+
+        <div class="dashboard-card">
+
+            <h4 class="mb-4">
+                <i class="fa-solid fa-chart-pie"></i>
+                Books Category
+            </h4>
+
+            <div class="row">
+
+                <div class="col-4">
+
+                    <h2>{{ education_books }}</h2>
+
+                    <h6>Education</h6>
+
+                </div>
+
+                <div class="col-4">
+
+                    <h2>{{ novel_books }}</h2>
+
+                    <h6>Novel</h6>
+
+                </div>
+
+                <div class="col-4">
+
+                    <h2>{{ history_books }}</h2>
+
+                    <h6>History</h6>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-6">
+
+        <div class="dashboard-card">
+
+            <h4 class="mb-4">
+                <i class="fa-solid fa-chart-column"></i>
+                Library Overview
+            </h4>
+
+            <canvas id="dashboardChart"></canvas>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Recent Students -->
+
+<div class="dashboard-card">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h4>
+
+            <i class="fa-solid fa-users"></i>
+
+            Recently Registered Students
+
+        </h4>
+
+        <a href="/viewstudent" class="btn btn-main">
+
+            View All
+
+        </a>
+
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table table-hover align-middle">
+
+            <thead>
+
+                <tr>
+
+                    <th>Photo</th>
+
+                    <th>Name</th>
+
+                    <th>Enrollment</th>
+
+                    <th>Branch</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for student in recent_students %}
+
+                <tr>
+
+                    <td>
+
+                        {% if student.photo %}
+
+                            <img src="{{ student.photo.url }}"
+                                 width="45"
+                                 height="45"
+                                 class="rounded-circle">
+
+                        {% else %}
+
+                            <img src="{% static 'images/default-user.png' %}"
+                                 width="45"
+                                 height="45"
+                                 class="rounded-circle">
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>{{ student.get_name }}</td>
+
+                    <td>{{ student.enrollment }}</td>
+
+                    <td>{{ student.branch }}</td>
+
+                </tr>
+
+            {% empty %}
+
+                <tr>
+
+                    <td colspan="4" class="text-center">
+
+                        No students registered.
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
 
 </div>
 
 {% include "library/footer.html" %}
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const ctx = document.getElementById("dashboardChart");
+
+    if (ctx) {
+
+        new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: ["Books", "Students", "Issued"],
+                datasets: [{
+                    label: "Library Data",
+                    data: [
+                        {{ total_books }},
+                        {{ total_students }},
+                        {{ total_issued_books }}
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+    }
+
+});
+
+</script>
+
+<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
-
-</html>

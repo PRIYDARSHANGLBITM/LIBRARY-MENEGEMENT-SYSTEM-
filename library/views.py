@@ -16,6 +16,8 @@ from librarymanagement.settings import EMAIL_HOST_USER
 from datetime import timedelta
 from django.utils import timezone
 from django.core.paginator import Paginator
+from django.db.models import Count
+from django.db.models import Q
 
 
 # ---------------- Home & Auth ----------------
@@ -56,11 +58,11 @@ def adminsignup_view(request):
 def studentsignup_view(request):
     form1 = forms.StudentUserForm()
     form2 = forms.StudentExtraForm()
-    context = {'form1': form1, 'form2': form2}
 
     if request.method == 'POST':
         form1 = forms.StudentUserForm(request.POST)
-        form2 = forms.StudentExtraForm(request.POST)
+        form2 = forms.StudentExtraForm(request.POST, request.FILES)
+
         if form1.is_valid() and form2.is_valid():
             user = form1.save()
             user.set_password(user.password)
@@ -75,29 +77,62 @@ def studentsignup_view(request):
 
             return HttpResponseRedirect('studentlogin')
 
-    return render(request, 'library/studentsignup.html', context)
-
+    return render(request, "library/studentsignup.html", {
+        "form1": form1,
+        "form2": form2,
+    })
 
 def is_admin(user):
     return user.groups.filter(name='ADMIN').exists()
 
 
 def afterlogin_view(request):
+
     if is_admin(request.user):
 
-        total_books = models.Book.objects.count()
-        total_students = models.StudentExtra.objects.count()
-        total_issued_books = models.IssuedBook.objects.count()
-
         context = {
-            "total_books": total_books,
-            "total_students": total_students,
-            "total_issued_books": total_issued_books,
+            "total_books": models.Book.objects.count(),
+            "total_students": models.StudentExtra.objects.count(),
+            "total_issued_books": models.IssuedBook.objects.count(),
+
+            "education_books": models.Book.objects.filter(category="education").count(),
+            "novel_books": models.Book.objects.filter(category="novel").count(),
+            "history_books": models.Book.objects.filter(category="history").count(),
+
+            "recent_students":
+                models.StudentExtra.objects.order_by("-id")[:5],
         }
 
-        return render(request, "library/adminafterlogin.html", context)
+        return render(request,
+                      "library/adminafterlogin.html",
+                      context)
 
-    return render(request, "library/studentafterlogin.html")
+    student = models.StudentExtra.objects.get(user=request.user)
+
+    issued_books = models.IssuedBook.objects.filter(
+        student=student
+    ).count()
+
+    fine_amount = 0
+
+    for book in models.IssuedBook.objects.filter(student=student):
+
+        days = (date.today() - book.issuedate).days
+
+        if days > 15:
+            fine_amount += (days - 15) * 10
+
+    context = {
+        "student": student,
+        "issued_books": issued_books,
+        "fine_amount": fine_amount,
+    }
+
+    return render(
+        request,
+        "library/studentafterlogin.html",
+        context
+    )
 
 
 def adminlogin_view(request):
@@ -211,8 +246,22 @@ def addbook_view(request):
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
 def viewbook_view(request):
+
+    search = request.GET.get("search")
+
     books = models.Book.objects.all()
-    return render(request, 'library/viewbook.html', {'books': books})
+
+    if search:
+        books = books.filter(
+            Q(name__icontains=search) |
+            Q(author__icontains=search) |
+            Q(isbn__icontains=search)
+        )
+
+    return render(request, "library/viewbook.html", {
+        "books": books,
+        "search": search,
+    })
 
 
 @login_required(login_url='adminlogin')
@@ -220,10 +269,20 @@ def viewbook_view(request):
 def adminprofile_view(request):
 
     context = {
-        "total_books": models.Book.objects.count(),
-        "total_students": models.StudentExtra.objects.count(),
-        "total_issued_books": models.IssuedBook.objects.count(),
-    }
+    "total_books": models.Book.objects.count(),
+    "total_students": models.StudentExtra.objects.count(),
+    "total_issued_books": models.IssuedBook.objects.count(),
+
+    "issued_today":
+        models.IssuedBook.objects.filter(
+            issuedate=date.today()
+        ).count(),
+
+    "returned_books":
+        models.Book.objects.count()
+        -
+        models.IssuedBook.objects.count(),
+}
 
     return render(request, "library/adminprofile.html", context)
 
@@ -311,44 +370,66 @@ def issuebook_view(request):
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
 def viewissuedbook_view(request):
-    issuedbooks = models.IssuedBook.objects.select_related('student__user', 'book').all()
+
+    search = request.GET.get("search")
+
+    issuedbooks = models.IssuedBook.objects.select_related(
+        "student__user",
+        "book"
+    ).all()
+
+    if search:
+        issuedbooks = issuedbooks.filter(
+            Q(student__user__first_name__icontains=search) |
+            Q(student__user__last_name__icontains=search) |
+            Q(student__enrollment__icontains=search) |
+            Q(book__name__icontains=search)
+        )
+
+    paginator = Paginator(issuedbooks, 10)
+
+    page = request.GET.get("page")
+
+    issuedbooks = paginator.get_page(page)
+
     li = []
 
     for ib in issuedbooks:
-        issdate = f"{ib.issuedate.day}-{ib.issuedate.month}-{ib.issuedate.year}"
-        expdate = f"{ib.expirydate.day}-{ib.expirydate.month}-{ib.expirydate.year}"
+
+        issdate = ib.issuedate.strftime("%d-%m-%Y")
+        expdate = ib.expirydate.strftime("%d-%m-%Y")
 
         days = (date.today() - ib.issuedate).days
+
         fine = (days - 15) * 10 if days > 15 else 0
 
         li.append((
-    ib.id,
-    ib.student.get_name,
-    ib.student.enrollment,
-    ib.book.name,
-    ib.book.author,
-    issdate,
-    expdate,
-    fine
-))
+            ib.id,
+            ib.student.get_name,
+            ib.student.enrollment,
+            ib.book.name,
+            ib.book.author,
+            issdate,
+            expdate,
+            fine
+        ))
 
-    return render(request, 'library/viewissuedbook.html', {'li': li})
-
-
-@login_required(login_url='adminlogin')
-@user_passes_test(is_admin)
-def viewstudent_view(request):
-
-    student_list = models.StudentExtra.objects.select_related('user').all().order_by('id')
-
-    paginator = Paginator(student_list, 10)   # 10 students per page
-
-    page_number = request.GET.get('page')
-    students = paginator.get_page(page_number)
-
-    return render(request, 'library/viewstudent.html', {
-        'students': students
+    return render(request, "library/viewissuedbook.html", {
+        "li": li,
+        "issuedbooks": issuedbooks,
+        "search": search,
     })
+
+
+@login_required(login_url='studentlogin')
+def librarycard_view(request):
+
+    student = models.StudentExtra.objects.get(user=request.user)
+
+    return render(request, "library/librarycard.html", {
+        "student": student,
+    })
+
 
 
 
@@ -418,12 +499,15 @@ def contactus_view(request):
 
 
 # ---------------- Delete ----------------
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
 def delete(request, id):
     book = get_object_or_404(models.Book, id=id)
     book.delete()
     return redirect("/viewbook")
 
-
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
 def deletestudent(request, id):
     student = get_object_or_404(models.StudentExtra, id=id)
     user = student.user
@@ -435,8 +519,33 @@ def deletestudent(request, id):
 # ---------------- Delete Student ----------------
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
+#------------------------------------------
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def viewstudent_view(request):
 
+    search = request.GET.get("search", "")
 
+    students = models.StudentExtra.objects.select_related("user")
+
+    if search:
+        students = students.filter(
+            Q(user__first_name__icontains=search) |
+            Q(user__last_name__icontains=search) |
+            Q(enrollment__icontains=search) |
+            Q(branch__icontains=search)
+        )
+
+    paginator = Paginator(students, 10)
+
+    page = request.GET.get("page")
+
+    students = paginator.get_page(page)
+
+    return render(request, "library/viewstudent.html", {
+        "students": students,
+        "search": search,
+    })
 # ---------------- Edit Student ----------------
 
 @login_required(login_url='adminlogin')
@@ -447,8 +556,6 @@ def editstudent(request, id):
     user = student.user
 
     if request.method == "POST":
-        print(request.POST)
-        
 
         user.first_name = request.POST.get("firstname")
         user.last_name = request.POST.get("lastname")
@@ -462,15 +569,21 @@ def editstudent(request, id):
 
         user.save()
 
-        # CSRF/Session issue fix
         if request.user == user:
             update_session_auth_hash(request, user)
 
         student.enrollment = request.POST.get("enrollment")
         student.branch = request.POST.get("branch")
+
+        if request.FILES.get("photo"):
+            student.photo = request.FILES["photo"]
+
         student.save()
 
-        messages.success(request, "Student details updated successfully!")
+        messages.success(
+            request,
+            "Student details updated successfully!"
+        )
 
         return redirect("/viewstudent")
 

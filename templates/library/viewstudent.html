@@ -133,6 +133,42 @@ Total Students :
 </span>
 
 </div>
+<form method="GET" class="row mb-4">
+
+    <div class="col-md-5">
+
+        <input
+            type="text"
+            name="search"
+            class="form-control"
+            placeholder="Search by Name or Enrollment..."
+            value="{{ search }}">
+
+    </div>
+
+    <div class="col-md-2">
+
+        <button class="btn btn-primary w-100">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+            Search
+
+        </button>
+
+    </div>
+
+    <div class="col-md-2">
+
+        <a href="/viewstudent"
+           class="btn btn-secondary w-100">
+
+            Reset
+
+        </a>
+
+    </div>
+
+</form>
 
 {% if students %}
 
@@ -144,7 +180,7 @@ Total Students :
 
 <tr>
 
-<th>#</th>
+<th>Photo</th>
 
 <th>Student Name</th>
 
@@ -170,48 +206,50 @@ Action
 
 <tr>
 
-<td>
+    <!-- Photo -->
+    <td>
+        {% if s.photo %}
+            <img src="{{ s.photo.url }}"
+                 width="55"
+                 height="55"
+                 style="object-fit:cover;border-radius:50%;">
+        {% else %}
+            <img src="{% static 'images/default-user.png' %}"
+                 width="55"
+                 height="55"
+                 style="object-fit:cover;border-radius:50%;">
+        {% endif %}
+    </td>
 
-{{ forloop.counter }}
+    <!-- Student Name -->
+    <td>{{ s.get_name }}</td>
 
-</td>
+    <!-- Email -->
+    <td>{{ s.user.email }}</td>
 
-<td>
-{{ s.get_name }}
-</td>
+    <!-- Enrollment -->
+    <td>{{ s.enrollment }}</td>
 
-<td>
-{{ s.user.email }}
-</td>
+    <!-- Branch -->
+    <td>{{ s.branch }}</td>
 
-<td>
-{{ s.enrollment }}
-</td>
+    <!-- Action -->
+    <td>
 
-<td>
-{{ s.branch }}
-</td>
+        <a href="{% url 'editstudent' s.id %}"
+           class="btn btn-warning btn-sm">
+            <i class="fa-solid fa-pen-to-square"></i>
+            Edit
+        </a>
 
-<td>
+        <a href="{% url 'deletestudent' s.id %}"
+           class="btn btn-danger btn-sm"
+           onclick="return confirm('Are you sure you want to delete this student?');">
+            <i class="fa-solid fa-trash"></i>
+            Delete
+        </a>
 
-    <a href="{% url 'editstudent' s.id %}"
-       class="btn btn-warning btn-sm">
-
-        <i class="fa-solid fa-pen-to-square"></i>
-        Edit
-
-    </a>
-
-    <a href="{% url 'deletestudent' s.id %}"
-       class="btn btn-danger btn-sm"
-       onclick="return confirm('Are you sure you want to delete this student?');">
-
-        <i class="fa-solid fa-trash"></i>
-        Delete
-
-    </a>
-
-</td>
+    </td>
 
 </tr>
 
@@ -227,13 +265,13 @@ Action
 
         {% if students.has_previous %}
         <li class="page-item">
-            <a class="page-link" href="?page=1">
+            <a class="page-link" href="?page=1&search={{ search }}">
                 <i class="fa-solid fa-angles-left"></i> First
             </a>
         </li>
 
         <li class="page-item">
-            <a class="page-link" href="?page={{ students.previous_page_number }}">
+            <a class="page-link" href="?page={{ students.previous_page_number }}&search={{ search }}">
                 <i class="fa-solid fa-angle-left"></i> Previous
             </a>
         </li>
@@ -246,20 +284,20 @@ Action
                 </li>
             {% elif num > students.number|add:'-3' and num < students.number|add:'3' %}
                 <li class="page-item">
-                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    <a class="page-link" href="?page={{ num }}&search={{ search }}">{{ num }}</a>
                 </li>
             {% endif %}
         {% endfor %}
 
         {% if students.has_next %}
         <li class="page-item">
-            <a class="page-link" href="?page={{ students.next_page_number }}">
+            <a class="page-link" href="?page={{ students.next_page_number }}&search={{ search }}">
                 Next <i class="fa-solid fa-angle-right"></i>
             </a>
         </li>
 
         <li class="page-item">
-            <a class="page-link" href="?page={{ students.paginator.num_pages }}">
+            <a class="page-link" href="?page={{ students.paginator.num_pages }}&search={{ search }}">
                 Last <i class="fa-solid fa-angles-right"></i>
             </a>
         </li>

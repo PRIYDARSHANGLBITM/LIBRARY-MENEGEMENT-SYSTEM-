@@ -89,6 +89,21 @@ body{
 <div class="container page">
 
 <div class="table-card">
+    {% if messages %}
+
+{% for message in messages %}
+
+<div class="alert alert-success alert-dismissible fade show">
+
+{{ message }}
+
+<button class="btn-close" data-bs-dismiss="alert"></button>
+
+</div>
+
+{% endfor %}
+
+{% endif %}
 
 <div class="d-flex justify-content-between align-items-center mb-4">
 
@@ -108,6 +123,28 @@ Total Issued :
 </span>
 
 </div>
+<form method="GET" class="mb-4">
+
+<div class="input-group">
+
+<input
+type="text"
+name="search"
+class="form-control"
+placeholder="Search Student, Enrollment or Book..."
+value="{{ search }}">
+
+<button class="btn btn-primary">
+
+<i class="fa-solid fa-magnifying-glass"></i>
+
+Search
+
+</button>
+
+</div>
+
+</form>
 
 {% if li %}
 
@@ -201,6 +238,70 @@ No Fine
 </table>
 
 </div>
+<nav class="mt-4">
+
+<ul class="pagination justify-content-center">
+
+{% if issuedbooks.has_previous %}
+
+<li class="page-item">
+<a class="page-link"
+href="?page=1&search={{ search }}">
+First
+</a>
+</li>
+
+<li class="page-item">
+<a class="page-link"
+href="?page={{ issuedbooks.previous_page_number }}&search={{ search }}">
+Previous
+</a>
+</li>
+
+{% endif %}
+
+{% for num in issuedbooks.paginator.page_range %}
+
+{% if issuedbooks.number == num %}
+
+<li class="page-item active">
+<span class="page-link">{{ num }}</span>
+</li>
+
+{% elif num > issuedbooks.number|add:'-3' and num < issuedbooks.number|add:'3' %}
+
+<li class="page-item">
+<a class="page-link"
+href="?page={{ num }}&search={{ search }}">
+{{ num }}
+</a>
+</li>
+
+{% endif %}
+
+{% endfor %}
+
+{% if issuedbooks.has_next %}
+
+<li class="page-item">
+<a class="page-link"
+href="?page={{ issuedbooks.next_page_number }}&search={{ search }}">
+Next
+</a>
+</li>
+
+<li class="page-item">
+<a class="page-link"
+href="?page={{ issuedbooks.paginator.num_pages }}&search={{ search }}">
+Last
+</a>
+</li>
+
+{% endif %}
+
+</ul>
+
+</nav>
 
 {% else %}
 

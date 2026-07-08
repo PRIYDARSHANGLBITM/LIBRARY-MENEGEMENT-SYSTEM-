@@ -109,15 +109,38 @@ View your profile and all books currently issued to you.
 
 <i class="fa-solid fa-user-graduate"></i>
 
-Student Profile
+<i class="fa-solid fa-user-graduate"></i>
+
+Student Information
 
 </div>
 
 <div class="card-body">
 
+<div class="text-center mb-4">
+
+{% if student.photo %}
+
+<img src="{{ student.photo.url }}"
+class="rounded-circle border border-3 border-primary"
+width="120"
+height="120">
+
+{% else %}
+
+<img src="{% static 'images/default-user.png' %}"
+class="rounded-circle border border-3 border-primary"
+width="120"
+height="120">
+
+{% endif %}
+
+</div>
+
 <div class="row">
 
 <div class="col-md-6">
+
 
 <div class="profile-item">
 
@@ -205,7 +228,9 @@ Active
 
 <div class="card-header bg-primary text-white fw-bold">
 
-Book Details
+<i class="fa-solid fa-book"></i>
+
+Issued Book Details
 
 </div>
 
@@ -258,6 +283,8 @@ Book Details
 <div class="card">
 
 <div class="card-header bg-success text-white fw-bold">
+<i class="fa-solid fa-calendar-check"></i>
+
 
 Issue Information
 
@@ -287,7 +314,15 @@ Issue Information
 
 <td>{{ t.0 }}</td>
 
-<td>{{ t.1 }}</td>
+<td>
+
+<span class="badge bg-warning text-dark">
+
+{{ t.1 }}
+
+</span>
+
+</td>
 
 <td>
 
@@ -301,7 +336,7 @@ No Fine
 
 {% else %}
 
-<span class="badge-fine">
+<span class="badge bg-danger fs-6">
 
 ₹ {{ t.2 }}
 
@@ -333,7 +368,25 @@ No Fine
 
 <i class="fa-solid fa-book-open fa-4x text-secondary mb-3"></i>
 
-<h3>No Book Issued</h3>
+<h3 class="mt-3">
+
+No Books Issued Yet
+
+</h3>
+
+<p class="text-muted">
+
+Visit your library and issue a book.
+
+</p>
+
+<a href="/librarycard" class="btn btn-primary">
+
+<i class="fa-solid fa-id-card"></i>
+
+Library Card
+
+</a>
 
 <p class="text-muted">
 

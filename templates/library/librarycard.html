@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Library Card</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+<style>
+
+body{
+    background:#f4f7fb;
+}
+
+.page{
+    margin-top:110px;
+    margin-bottom:60px;
+}
+
+.card-box{
+    background:#fff;
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+.page-title{
+    color:#2563EB;
+    font-weight:700;
+}
+
+.library-card{
+    max-width:760px;
+    margin:auto;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 12px 30px rgba(0,0,0,.15);
+    border:2px solid #2563EB;
+}
+
+.library-header{
+    background:linear-gradient(135deg,#2563EB,#1D4ED8);
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+
+.library-body{
+    padding:35px;
+    background:white;
+}
+
+.avatar{
+    width:150px;
+    height:150px;
+    border-radius:50%;
+    object-fit:cover;
+    object-position:center;
+    border:5px solid #2563EB;
+    display:block;
+    margin:auto;
+    background:#EEF5FF;
+}
+.info{
+    font-size:17px;
+    margin-bottom:14px;
+}
+
+.info strong{
+    color:#2563EB;
+    display:inline-block;
+    width:130px;
+}
+
+.card-id{
+    margin-top:20px;
+    padding:12px;
+    background:#EEF5FF;
+    border-radius:10px;
+    text-align:center;
+    font-weight:bold;
+    color:#2563EB;
+    font-size:18px;
+    letter-spacing:1px;
+}
+
+.footer-card{
+    background:#2563EB;
+    color:white;
+    text-align:center;
+    padding:12px;
+    font-size:14px;
+}
+
+.button-box{
+    text-align:center;
+    margin-top:30px;
+}
+
+.btn-print{
+    border-radius:10px;
+    padding:10px 28px;
+}
+
+@media print{
+
+body{
+    background:white;
+}
+
+nav,
+footer,
+.button-box{
+    display:none;
+}
+
+.page{
+    margin:0;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+{% include "library/navbarstudent.html" %}
+
+<div class="container page">
+
+<div class="card-box">
+
+<h2 class="page-title mb-4">
+
+<i class="fa-solid fa-id-card"></i>
+
+Digital Library Card
+
+</h2>
+
+<div class="library-card">
+
+<div class="library-header">
+
+<h3 class="mb-1">
+
+Library Management System
+
+</h3>
+
+<p class="mb-0">
+
+Student Identity Card
+
+</p>
+
+</div>
+
+<div class="library-body">
+
+<div class="row align-items-center">
+
+<div class="col-md-4 text-center">
+
+{% if student.photo %}
+<img src="{{ student.photo.url }}" class="avatar">
+{% else %}
+<img src="{% static 'images/default-user.png' %}" class="avatar">
+{% endif %}
+
+</div>
+
+<div class="col-md-8">
+
+<div class="info">
+<strong>Name :</strong>
+{{ student.user.first_name }} {{ student.user.last_name }}
+</div>
+
+<div class="info">
+<strong>Enrollment :</strong>
+{{ student.enrollment }}
+</div>
+
+<div class="info">
+<strong>Branch :</strong>
+{{ student.branch }}
+</div>
+
+<div class="info">
+<strong>Email :</strong>
+{{ student.user.email }}
+</div>
+
+<div class="info">
+<strong>Status :</strong>
+
+{% if student.user.is_active %}
+
+<span class="badge bg-success fs-6">
+Active
+</span>
+
+{% else %}
+
+<span class="badge bg-danger fs-6">
+Inactive
+</span>
+
+{% endif %}
+
+</div>
+
+<div class="card-id">
+
+LIB-{{ student.enrollment }}
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="footer-card">
+
+<i class="fa-solid fa-book-open-reader"></i>
+
+Please carry this card while visiting the library.
+
+</div>
+
+</div>
+
+
+
+</div>
+
+</div>
+
+{% include "library/footer.html" %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

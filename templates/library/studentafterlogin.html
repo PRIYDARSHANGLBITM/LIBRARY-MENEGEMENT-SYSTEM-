@@ -19,7 +19,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
 <style>
 
 body{
-    background:#f4f7fb;
+    background:#F4F7FB;
 }
 
 .dashboard{
@@ -28,78 +28,89 @@ body{
 }
 
 .welcome-card{
-
     background:linear-gradient(135deg,#2563EB,#14B8A6);
     color:white;
-    padding:45px;
+    padding:40px;
     border-radius:20px;
-    box-shadow:0 10px 30px rgba(0,0,0,.15);
-
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
 }
 
 .dashboard-card{
-
-    background:white;
+    background:var(--card-bg);
+    color:var(--text-color);
     border-radius:18px;
-    padding:40px 25px;
+    padding:30px;
     text-align:center;
     box-shadow:0 8px 20px rgba(0,0,0,.08);
     transition:.3s;
-
+    height:100%;
 }
 
 .dashboard-card:hover{
-
-    transform:translateY(-8px);
-
+    transform:translateY(-6px);
 }
 
 .dashboard-card i{
-
-    font-size:60px;
+    font-size:55px;
     color:#2563EB;
     margin-bottom:20px;
-
 }
 
-.dashboard-card h3{
-
+.dashboard-card h2{
+    color:#2563EB;
     font-weight:700;
-    margin-bottom:15px;
-
 }
 
-.dashboard-card p{
+.dashboard-card h5{
+    margin-top:10px;
+}
 
-    color:#666;
 
+
+.profile-img{
+    width:140px;
+    height:140px;
+    border-radius:50%;
+    object-fit:cover;
+    border:5px solid #2563EB;
+}
+
+.info{
+    margin-bottom:12px;
+    font-size:16px;
+}
+
+.info strong{
+    color:#2563EB;
 }
 
 .btn-main{
-
     background:#2563EB;
     color:white;
     border-radius:10px;
-    padding:10px 28px;
+    padding:10px 22px;
     font-weight:600;
-
 }
 
 .btn-main:hover{
-
     background:#1D4ED8;
     color:white;
+}
+
+.profile-card,
+.guideline-card{
+
+    background:var(--card-bg);
+    color:var(--text-color);
+    border-radius:18px;
+    padding:30px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    transition:.35s;
 
 }
 
-.info-card{
-
-    background:white;
-    border-radius:18px;
-    padding:30px;
-    margin-top:30px;
-    box-shadow:0 8px 20px rgba(0,0,0,.08);
-
+.guideline-card li{
+    padding:8px 0;
 }
 
 </style>
@@ -116,49 +127,84 @@ body{
 
 <h2>
 
-Welcome,
-
-{{ user.first_name }}
-
-👋
+Welcome, {{ user.first_name }} 👋
 
 </h2>
 
-<p class="mb-0">
+<p class="mb-4">
 
-Access your library account, view your issued books,
-track due dates and check your library records.
+Welcome to your Library Dashboard.
+Manage your issued books and access your digital library card.
 
 </p>
 
+<a href="/viewissuedbookbystudent" class="btn btn-light me-2">
+
+<i class="fa-solid fa-book-open-reader"></i>
+
+My Books
+
+</a>
+
+<a href="/librarycard" class="btn btn-warning">
+
+<i class="fa-solid fa-id-card"></i>
+
+Library Card
+
+</a>
+
 </div>
 
-<div class="row">
+<div class="row g-4 mb-4">
 
-<div class="col-lg-12">
+<div class="col-md-4">
 
 <div class="dashboard-card">
 
 <i class="fa-solid fa-book-open-reader"></i>
 
-<h3>
+<h2>{{ issued_books }}</h2>
 
-My Issued Books
+<h5>Issued Books</h5>
 
-</h3>
+</div>
 
-<p>
+</div>
 
-View all books currently issued to you along with
-issue date, expiry date and fine details.
+<div class="col-md-4">
 
-</p>
+<div class="dashboard-card">
 
-<a href="/viewissuedbookbystudent" class="btn btn-main">
+<i class="fa-solid fa-id-card"></i>
+
+<h2>LIB</h2>
+
+<h5>Digital Card</h5>
+
+<a href="/librarycard" class="btn btn-main mt-3">
+
+View Card
+
+</a>
+
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<div class="dashboard-card">
 
 <i class="fa-solid fa-eye"></i>
 
-View Books
+<h2>Books</h2>
+
+<h5>Issued Details</h5>
+
+<a href="/viewissuedbookbystudent" class="btn btn-main mt-3">
+
+Open
 
 </a>
 
@@ -168,7 +214,69 @@ View Books
 
 </div>
 
-<div class="info-card">
+<div class="row g-4 mb-5">
+
+<div class="col-lg-5">
+
+<div class="profile-card">
+
+<h4 class="mb-4">
+
+<i class="fa-solid fa-user"></i>
+
+My Profile
+
+</h4>
+
+<div class="text-center mb-4">
+
+{% if student.photo %}
+<img src="{{ student.photo.url }}" class="profile-img">
+{% else %}
+<img src="{% static 'images/default-user.png' %}" class="profile-img">
+{% endif %}
+
+</div>
+
+<div class="info">
+
+<strong>Name :</strong>
+
+{{ student.get_name }}
+
+</div>
+
+<div class="info">
+
+<strong>Enrollment :</strong>
+
+{{ student.enrollment }}
+
+</div>
+
+<div class="info">
+
+<strong>Branch :</strong>
+
+{{ student.branch }}
+
+</div>
+
+<div class="info">
+
+<strong>Email :</strong>
+
+{{ student.user.email }}
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-7">
+
+<div class="guideline-card">
 
 <h4>
 
@@ -182,15 +290,27 @@ Library Guidelines
 
 <ul>
 
-<li>Return books before the due date to avoid late fines.</li>
+<li>Return books before the due date.</li>
 
-<li>Keep your books in good condition.</li>
+<li>Late return may generate fine.</li>
 
-<li>Carry your student ID while visiting the library.</li>
+<li>Keep books neat and clean.</li>
 
-<li>Contact the librarian if you find incorrect issue records.</li>
+<li>Do not write on library books.</li>
+
+<li>Always carry your Library Card.</li>
+
+<li>Report lost books immediately.</li>
+
+<li>Follow library rules and timings.</li>
+
+<li>Contact librarian for any issue.</li>
 
 </ul>
+
+</div>
+
+</div>
 
 </div>
 

@@ -72,10 +72,12 @@ for i in range(1, 101):
     student_group.user_set.add(user)
 
     student = StudentExtra.objects.create(
-        user=user,
-        enrollment=f"2401920109{i:03}",
-        branch=random.choice(branches),
-    )
+    user=user,
+    enrollment=f"2401920109{i:03}",
+    branch=random.choice(branches),
+)
+
+
 
     students.append(student)
 
